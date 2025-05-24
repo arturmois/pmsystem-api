@@ -76,6 +76,20 @@ Estudar Git Flow antes de começar!
 
 **Sugestão:** [Git Flow Workflow](https://www.atlassian.com/br/git/tutorials/comparing-workflows/gitflow-workflow)
 
+## Running the Dockerfile
+
+1. Build the Docker image:
+   ```sh
+   docker build -t pmsystem-api .
+   ```
+
+2. Run the container:
+   ```sh
+   docker run -p 3000:3000 pmsystem-api
+   ```
+
+This will start the application on port 3000.
+
 ## 🧪 Desenvolvimento Orientado a Testes (TDD) - Opcional
 
 ### Estrutura de Testes

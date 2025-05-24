@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,7 +16,7 @@ model User {
   email      String   @unique
   password   String
   birth_date DateTime
-  type       String // E/P/G
+  role       String // E/P/G
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
