@@ -1,133 +1,180 @@
-# PM System API
+# PMS System API
 
-## 🚀 Instalação
+API for managing projects, budgets, and tickets in a professional management system.
 
-1. Clone o repositório:
+## Features
+
+- User authentication (Professional, Company, Manager)
+- Project management
+- Budget management
+- Ticket system
+- Sales tracking
+
+## Tech Stack
+
+- Node.js
+- Express
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- JWT Authentication
+- Zod Validation
+
+## Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+- PostgreSQL
+
+## Setup
+
+1. Clone the repository:
 ```bash
-git clone [URL_DO_REPOSITÓRIO]
+git clone https://github.com/yourusername/pmsystem-api.git
 cd pmsystem-api
 ```
 
-2. Instale as dependências:
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Configure as variáveis de ambiente:
-```bash
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
-# Certifique-se de configurar a variável DATABASE_URL
+3. Create a `.env` file in the root directory with the following content:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/pmsystem"
+JWT_SECRET="your-secret-key-change-in-production"
+PORT=3000
 ```
 
-4. Configure o Prisma:
+4. Generate Prisma client:
 ```bash
-# Gera o cliente Prisma
-npx prisma generate
-
-# Executa as migrações do banco de dados
-npx prisma migrate dev
+npm run prisma:generate
 ```
 
-## 🏃‍♂️ Executando o Projeto
+5. Run database migrations:
+```bash
+npm run prisma:migrate
+```
 
-### Desenvolvimento
+## Running the Application
+
+Development mode:
 ```bash
 npm run dev
 ```
 
-### Produção
+Production build:
 ```bash
 npm run build
 npm start
 ```
 
-## 🔄 Git Flow – Organização de Branches
+## API Endpoints
 
-Vamos seguir o Git Flow para manter organização e controle de versões.
+### Authentication
+- POST /api/auth/login
+- POST /api/auth/register-professional
+- POST /api/auth/register-company
+- GET /api/auth/user
 
-### 📌 Fluxo de Branches
+### Projects
+- POST /api/projects
+- PUT /api/projects/:id
+- DELETE /api/projects/:id
+- GET /api/projects/:id
+- GET /api/projects
 
-- **main** → versão de produção (sempre estável)
-- **develop** → versão em desenvolvimento (integração das features)
-- **feature/nome-da-tarefa** → para cada nova funcionalidade
-- **fix/nome-do-bug** → para correções
-- **release/x.x.x** → para preparar uma nova entrega
-- **hotfix/x.x.x** → correções rápidas em produção
+### Budgets
+- POST /api/budgets
+- PUT /api/budgets/:id
+- DELETE /api/budgets/:id
+- GET /api/budgets/:id
+- GET /api/budgets
 
-### 📦 Comandos Git recomendados
+### Tickets
+- POST /api/tickets
+- PUT /api/tickets/:id
+- DELETE /api/tickets/:id
+- GET /api/tickets/:id
+- GET /api/tickets
 
-#### Criar uma nova feature
-```bash
-git checkout develop
-git checkout -b feature/login-tela
-```
+## Data Models
 
-#### Subir alterações
-```bash
-git add .
-git commit -m "feat: tela de login criada"
-git push origin feature/login-tela
-```
+### User
+- user_id (UUID)
+- email (String)
+- password (String)
+- birth_date (DateTime)
+- role (String: E/P/G)
+- created_at (DateTime)
+- updated_at (DateTime)
 
-### 📚 Tarefa para Todos
+### Company
+- company_id (UUID)
+- user_id (UUID)
+- cnpj (String)
+- address (String)
+- fantasy_name (String)
+- social_reason (String)
+- segment (String)
+- monthly_fee (Float)
+- commission (Float)
+- created_at (DateTime)
+- updated_at (DateTime)
 
-Estudar Git Flow antes de começar!
+### Professional
+- professional_id (UUID)
+- user_id (UUID)
+- cpf (String)
+- name (String)
+- preferred_name (String)
+- type (String)
+- desk (String)
+- created_at (DateTime)
+- updated_at (DateTime)
 
-**Sugestão:** [Git Flow Workflow](https://www.atlassian.com/br/git/tutorials/comparing-workflows/gitflow-workflow)
+### Project
+- project_id (UUID)
+- professional_id (UUID)
+- title (String)
+- start_date (DateTime)
+- created_at (DateTime)
+- updated_at (DateTime)
 
-## Running the Dockerfile
+### Budget
+- budget_id (UUID)
+- project_id (UUID)
+- company_id (UUID)
+- description (String)
+- status (String)
+- created_at (DateTime)
+- updated_at (DateTime)
 
-1. Build the Docker image:
-   ```sh
-   docker build -t pmsystem-api .
-   ```
+### Ticket
+- ticket_id (UUID)
+- budget_id (UUID)
+- user_id (UUID)
+- message (String)
+- file_url (String)
+- created_at (DateTime)
+- updated_at (DateTime)
 
-2. Run the container:
-   ```sh
-   docker run -p 3000:3000 pmsystem-api
-   ```
+### Sale
+- sale_id (UUID)
+- budget_id (UUID)
+- company_id (UUID)
+- value (Float)
+- created_at (DateTime)
+- updated_at (DateTime)
 
-This will start the application on port 3000.
+## Contributing
 
-## 🧪 Desenvolvimento Orientado a Testes (TDD) - Opcional
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Estrutura de Testes
-- `test/` - Diretório principal para testes
-  - Testes unitários e de integração são organizados por domínio
-  - Exemplo: `test/User.test.ts`, `test/UserService.test.ts`
+## License
 
-### Executando Testes
-```bash
-# Executa todos os testes
-npm test
-
-# Executa testes em modo watch
-npm run test:watch
-
-# Executa testes com cobertura
-npm run test:coverage
-```
-
-### Boas Práticas de TDD
-1. Escreva o teste primeiro (Red)
-2. Implemente o código mínimo para passar (Green)
-3. Refatore mantendo os testes passando (Refactor)
-
-### Exemplo de Teste
-```typescript
-import User from "../src/model/User";
-
-test("Should create a user", () => {
-  const user = User.create(
-    "john.doe@example.com",
-    "password",
-    new Date(),
-    "E"
-  );
-  
-  expect(user.getUserId()).toBeDefined();
-  expect(user.getEmail()).toBe("john.doe@example.com");
-  expect(user.getType()).toBe("E");
-});
-```
+This project is licensed under the ISC License.

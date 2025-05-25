@@ -1,0 +1,7 @@
+   src/
+   ├── app.ts              # Express app configuration
+   ├── server.ts           # Server entry point
+   ├── controllers/        # Route controllers
+   ├── routes/            # Route definitions
+   ├── middlewares/       # Custom middlewares
+   └── prisma/            # Database schema and migrations
