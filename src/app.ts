@@ -1,12 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import { userRoutes } from './routes/user.routes';
+import router from './router'
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/auth', userRoutes);
+app.use('/auth', router.authRoutes);
+
+app.use('/project', router.projectRoutes)
 
 app.get('/', (req, res) => {
   res.send('Hello World');

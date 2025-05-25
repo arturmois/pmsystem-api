@@ -12,4 +12,4 @@ router.post('/register-professional', userController.registerProfessional as Req
 router.post('/register-company', userController.registerCompany as RequestHandler);
 router.get('/user', userController.getUser as RequestHandler);
 
-export { router as userRoutes }; 
+export default router; 
