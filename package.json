@@ -1,11 +1,11 @@
 {
   "name": "pmsystem-api",
   "version": "1.0.0",
-  "main": "src/server.ts",
+  "main": "src/main.ts",
   "scripts": {
-    "dev": "npx nodemon src/server.ts",
+    "dev": "npx nodemon src/main.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/main.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "setup": "node setup.ts"

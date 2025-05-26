@@ -22,7 +22,7 @@ CREATE TABLE "companies" (
     "commission" REAL NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,
-    CONSTRAINT "companies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "companies_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -36,7 +36,7 @@ CREATE TABLE "professionals" (
     "desk" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,
-    CONSTRAINT "professionals_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "professionals_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -47,7 +47,7 @@ CREATE TABLE "projects" (
     "start_date" DATETIME NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,
-    CONSTRAINT "projects_professional_id_fkey" FOREIGN KEY ("professional_id") REFERENCES "professionals" ("professional_id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "projects_professional_id_fkey" FOREIGN KEY ("professional_id") REFERENCES "professionals" ("professional_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -59,8 +59,8 @@ CREATE TABLE "budgets" (
     "status" TEXT NOT NULL DEFAULT 'pending',
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,
-    CONSTRAINT "budgets_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "budgets_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies" ("company_id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "budgets_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "budgets_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies" ("company_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -72,8 +72,8 @@ CREATE TABLE "tickets" (
     "file_url" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,
-    CONSTRAINT "tickets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "tickets_budget_id_fkey" FOREIGN KEY ("budget_id") REFERENCES "budgets" ("budget_id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "tickets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "tickets_budget_id_fkey" FOREIGN KEY ("budget_id") REFERENCES "budgets" ("budget_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -84,8 +84,8 @@ CREATE TABLE "sales" (
     "value" REAL NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL,
-    CONSTRAINT "sales_budget_id_fkey" FOREIGN KEY ("budget_id") REFERENCES "budgets" ("budget_id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "sales_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies" ("company_id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "sales_budget_id_fkey" FOREIGN KEY ("budget_id") REFERENCES "budgets" ("budget_id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "sales_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies" ("company_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex

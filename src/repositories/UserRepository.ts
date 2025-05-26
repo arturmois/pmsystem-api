@@ -1,12 +1,14 @@
-import { prisma } from "../config/database";
+import { PrismaClient } from "@prisma/client";
 import Company from "../models/Company";
-import { Professional } from "../models/Professional";
+import Professional from "../models/Professional";
+import { inject } from "../shared/di/DI";
 
-export class UserRepository {
-  constructor() { }
+export default class UserRepository {
+  @inject('prisma')
+  private prisma: PrismaClient;
 
   async createProfessional(professional: Professional) {
-    await prisma.user.create({
+    await this.prisma.user.create({
       data: {
         email: professional.getEmail(),
         password: professional.getPassword(),
@@ -29,7 +31,7 @@ export class UserRepository {
   }
 
   async createCompany(company: Company) {
-    await prisma.user.create({
+    await this.prisma.user.create({
       data: {
         email: company.getEmail(),
         password: company.getPassword(),
