@@ -14,8 +14,8 @@ new Dependencies();
 const userRouter = new UserRouter();
 const authRouter = new AuthRouter();
 
-app.use('/auth', authRouter.getRouter());
-app.use('/users', userRouter.getRouter());
+app.use('/api/auth', authRouter.getRouter());
+app.use('/api/users', userRouter.getRouter());
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
