@@ -5,18 +5,24 @@ import router from './router'
 const app = express();
 
 app.use(cors());
+
 app.use(express.json());
-app.use('/auth', router.authRoutes);
 
-app.use('/project', router.projectRoutes)
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
+// Configuração de rotas
+Object.keys(router).forEach((key) => {
+  app.use(`/${key}`, router[key].routes);
 });
 
+// Middleware para tratamento de erros
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+
+  const status = err.status || 500;
+  const message = err.message || 'Erro interno no servidor';
+
+  res.status(status).json({ status, message });
 });
 
 export { app }; 
