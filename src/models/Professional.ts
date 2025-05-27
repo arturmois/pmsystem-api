@@ -1,7 +1,7 @@
 import { User } from "./User";
 import bcrypt from 'bcrypt';
 
-export class Professional extends User {
+export default class Professional extends User {
   private name: string;
   private preferredName: string;
   private cpf: string;

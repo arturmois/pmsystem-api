@@ -25,6 +25,26 @@ API for managing projects, budgets, and tickets in a professional management sys
 - Node.js (v18 or higher)
 - npm or yarn
 - PostgreSQL
+- Docker and Docker Compose (optional, for containerized setup)
+
+## Docker Setup
+
+1. Make sure you have Docker and Docker Compose installed on your system.
+
+2. Start the containers:
+```bash
+docker-compose up -d
+```
+
+3. Run database migrations:
+```bash
+docker-compose exec api npm run prisma:migrate
+```
+
+To stop the containers:
+```bash
+docker-compose down
+```
 
 ## Setup
 
@@ -41,9 +61,10 @@ npm install
 
 3. Create a `.env` file in the root directory with the following content:
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/pmsystem"
-JWT_SECRET="your-secret-key-change-in-production"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/app"
 PORT=3000
+JWT_SECRET="your-secret-key-change-in-production"
+JWT_EXPIRATION=1d
 ```
 
 4. Generate Prisma client:
