@@ -11,12 +11,12 @@ const services: ServiceMap = {};
 
 fs.readdirSync(routerPath).forEach((file) => {
     const ext = path.extname(file);
-    if (ext === '.ts') {
+    if (ext === '.ts' && file !== 'index.ts') {
         const route = path.basename(file, ext);
+
         const serviceModule = require(path.join(routerPath, file));
 
         const name = route.replace(/Routes$/, '');
-        if (name === 'index') return;
 
         services[name] = { route, routes: serviceModule.default || serviceModule };
     }
