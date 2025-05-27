@@ -103,10 +103,10 @@ src/
 
 ### Autenticação
 - POST /auth/login
-- POST /auth/register
 
 ### Usuários
-- GET /users
+- POST /users/register-professional
+- POST /users/register-company
 - GET /users/:id
 - PUT /users/:id
 - DELETE /users/:id
