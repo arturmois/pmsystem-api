@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import AuthRouter from './routes/authRouter';
 import UserRouter from './routes/userRouter';
+import TicketRouter from './routes/ticketRouter';
 import { PORT } from "./config/env";
 import Dependencies from './dependencies';
 
@@ -13,9 +14,11 @@ new Dependencies();
 
 const userRouter = new UserRouter();
 const authRouter = new AuthRouter();
+const ticketRouter = new TicketRouter();
 
 app.use('/api/auth', authRouter.getRouter());
 app.use('/api/users', userRouter.getRouter());
+app.use('/api/ticket', ticketRouter.getRouter());
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
