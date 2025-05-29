@@ -1,26 +1,27 @@
 import express from 'express';
 import cors from 'cors';
-import AuthRouter from './routes/authRouter';
-import UserRouter from './routes/userRouter';
 import { PORT } from "./config/env";
-import Dependencies from './dependencies';
+import { ZodError } from 'zod';
+import InitializeDependencies from './shared/di/InitializeDependencies';
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+function initializeApp() {
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
+  InitializeDependencies.initialize();
+  const routes = require('./routes').default;
+  app.use('/', routes);
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (err instanceof ZodError) {
+      res.status(400).json({ error: err.errors });
+    } else {
+      res.status(500).json({ error: err.message });
+    }
+  });
+  return app;
+}
 
-new Dependencies();
-
-const userRouter = new UserRouter();
-const authRouter = new AuthRouter();
-
-app.use('/api/auth', authRouter.getRouter());
-app.use('/api/users', userRouter.getRouter());
-
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+const app = initializeApp();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

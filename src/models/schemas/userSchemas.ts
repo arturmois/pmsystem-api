@@ -9,7 +9,7 @@ export const userSchema = z.object({
 
 export const professionalSchema = userSchema.extend({
   name: z.string(),
-  preferredName: z.string().optional(),
+  preferredName: z.string().optional().default(''),
   cpf: z.string().length(11),
   type: z.string(),
   desk: z.string()
