@@ -1,0 +1,44 @@
+import Professional from "../../models/entities/Professional";
+import { inject } from "../../shared/di/DI";
+import IUserRepository from "../../repositories/UserRepository";
+import AppError from "../../shared/errors/AppError";
+
+export default class RegisterProfessional {
+  @inject('userRepository')
+  private userRepository!: IUserRepository;
+
+  async execute(input: Input): Promise<Output> {
+    const professional = await Professional.createProfessional(
+      input.email,
+      input.password,
+      input.birthDate,
+      input.role, input.name,
+      input.preferredName,
+      input.cpf,
+      input.type,
+      input.desk);
+    const userExists = await this.userRepository.findByEmail(input.email);
+    if (userExists) {
+      throw new AppError('User already exists', 400);
+    }
+    await this.userRepository.createProfessional(professional);
+    return { userId: professional.getUserId() };
+  }
+
+}
+
+type Input = {
+  email: string;
+  password: string;
+  birthDate: Date;
+  role: string;
+  name: string;
+  preferredName: string;
+  cpf: string;
+  type: string;
+  desk: string;
+}
+
+type Output = {
+  userId: string;
+}

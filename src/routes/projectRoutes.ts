@@ -1,12 +1,8 @@
 import { Router, RequestHandler } from 'express';
-import { ProjectController } from '../controllers/project.controller';
-import { ProjectService } from '../services/project.service';
-import { ProjectRepository } from '../repositories/projectRepository';
+import ProjectController from '../controllers/ProjectController';
 
 const router: Router = Router();
-const projectRepository = new ProjectRepository();
-const projectService = new ProjectService(projectRepository);
-const projectController = new ProjectController(projectService);
+const projectController = new ProjectController();
 
 router.post('/create-project', projectController.controllerCreateProject as RequestHandler);
 router.get('/:id', projectController.controllerGetAllProjects as RequestHandler);

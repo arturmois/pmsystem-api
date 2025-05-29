@@ -1,39 +1,35 @@
-import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
+import { Request, Response } from 'express';
 import { professionalSchema, companySchema } from '../models/schemas/userSchemas';
+import RegisterCompany from '../services/users/RegisterCompany';
+import RegisterProfessional from '../services/users/RegisterProfessional';
 import { inject } from '../shared/di/DI';
-import UserService from '../services/users/UserService';
+import { loginSchema } from '../models/schemas/loginSchema';
+import SignIn from '../services/users/Signin';
 
 export default class UserController {
-  @inject('userService')
-  private userService!: UserService;
+  @inject('registerProfessional')
+  private _registerProfessional!: RegisterProfessional;
+  @inject('registerCompany')
+  private _registerCompany!: RegisterCompany;
+  @inject('signIn')
+  private _signIn!: SignIn;
 
-  registerProfessional = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const data = professionalSchema.parse(req.body);
-      await this.userService.registerProfessional(data);
-      res.status(201).json({ message: "Professional registered" });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: error.errors });
-      } else {
-        next(error);
-      }
-    }
+  async registerProfessional(req: Request, res: Response) {
+    const data = professionalSchema.parse(req.body);
+    await this._registerProfessional.execute(data);
+    res.json({ message: "Professional registered" });
   }
 
-  registerCompany = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const input = companySchema.parse(req.body);
-      await this.userService.registerCompany(input);
-      res.status(201).json({ message: "Company registered" });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: error.errors });
-      } else {
-        next(error);
-      }
-    }
+  async registerCompany(req: Request, res: Response) {
+    const input = companySchema.parse(req.body);
+    await this._registerCompany.execute(input);
+    res.json({ message: "Company registered" });
+  }
+
+  async login(req: Request, res: Response) {
+    const { email, password } = loginSchema.parse(req.body);
+    const result = await this._signIn.execute({ email, password });
+    res.json({ token: result.token });
   }
 
 }

@@ -1,36 +1,41 @@
 export class Registry {
-  private dependencies: Map<string, any>;
-
+  private dependencies: { [name: string]: any };
   private static instance: Registry;
 
   private constructor() {
-    this.dependencies = new Map();
+    this.dependencies = {};
   }
 
-  public static getInstance(): Registry {
+  provide(name: string, dependency: any) {
+    this.dependencies[name] = dependency;
+  }
+
+  inject(name: string) {
+    const dependency = this.dependencies[name];
+    return dependency;
+  }
+
+  static getInstance() {
     if (!Registry.instance) {
       Registry.instance = new Registry();
     }
     return Registry.instance;
   }
-
-  public provide(serviceName: string, service: any) {
-    this.dependencies.set(serviceName, service);
-  }
-
-  public get(serviceName: string) {
-    return this.dependencies.get(serviceName);
-  }
 }
 
-export function inject(serviceName: string) {
+// decorator
+export function inject(name: string) {
   return function (target: any, propertyKey: string) {
     Object.defineProperty(target, propertyKey, {
-      get: function () {
-        return Registry.getInstance().get(serviceName);
+      get() {
+        const dependency = Registry.getInstance().inject(name);
+        if (!dependency) {
+          throw new Error(`Dependency ${name} not found for ${propertyKey}`);
+        }
+        return dependency;
       },
       enumerable: true,
       configurable: true
     });
-  };
+  }
 }

@@ -1,13 +1,13 @@
 import { RequestHandler } from "express";
 import { schemaCreate, schemaUpdate } from "../models/schemas/projectSchemas";
 import { z } from 'zod';
-import { ProjectService } from "../services/project.service";
+import { ProjectService } from "../services/projects/ProjectService";
+import { inject } from "../shared/di/DI";
+import AppError from "../shared/errors/AppError";
 
-import { HttpException } from "../errors/HttpException";
-
-
-export class ProjectController {
-  constructor(private readonly projectService: ProjectService) { }
+export default class ProjectController {
+  @inject('projectService')
+  private projectService!: ProjectService;
 
   controllerCreateProject: RequestHandler = async (req, res, next) => {
     try {
@@ -52,9 +52,9 @@ export class ProjectController {
       }
 
       if (error.code === 'P2025') {
-        throw new HttpException(404, 'Projeto não encontrado.');
+        throw new AppError('Projeto não encontrado.', 404);
       }
-      throw new HttpException(500, 'Erro inesperado.');
+      throw new AppError('Erro inesperado.', 500);
     }
   }
 
@@ -65,9 +65,9 @@ export class ProjectController {
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
       if (error.code === 'P2025') {
-        throw new HttpException(404, 'Projeto não encontrado.');
+        throw new AppError('Projeto não encontrado.', 404);
       }
-      throw new HttpException(500, 'Erro inesperado.');
+      throw new AppError('Erro inesperado.', 500);
     }
   }
 }
