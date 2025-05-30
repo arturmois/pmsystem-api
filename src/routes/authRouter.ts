@@ -1,21 +1,21 @@
-import { Router } from 'express';
-import { Registry } from '../shared/di/DI';
 import AuthController from '../controllers/AuthController';
+import { Registry } from '../shared/di/DI';
+
+type RouteDefinition = [methods: string, path: string, handler: Function];
 
 export default class AuthRouter {
-  private router: Router;
-  private registry: Registry;
   private authController: AuthController;
+  private routes: RouteDefinition[];
 
   constructor() {
-    this.router = Router();
-    this.registry = Registry.getInstance();
-    this.authController = this.registry.get('authController');
+    this.authController = Registry.getInstance().get('authController');
 
-    this.router.post('/login', this.authController.login);
+    this.routes = [
+      ['post', '/login', this.authController.login],
+    ];
   }
 
-  getRouter() {
-    return this.router;
+  getRoutes() {
+    return this.routes;
   }
 }

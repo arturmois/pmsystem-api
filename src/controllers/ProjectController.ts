@@ -1,21 +1,18 @@
-import { RequestHandler } from "express";
+import { NextFunction, Request, Response } from 'express';
 import { schemaCreate, schemaUpdate } from "../models/schemas/projectSchemas";
 import { z } from 'zod';
-import { ProjectService } from "../services/project.service";
+import ProjectService from "../services/project/ProjectService";
+import { inject } from '../shared/di/DI';
 
-import { HttpException } from "../errors/HttpException";
+export default class ProjectController {
+  @inject('projectService')
+  private projectService!: ProjectService;
 
-
-export class ProjectController {
-  constructor(private readonly projectService: ProjectService) { }
-
-  controllerCreateProject: RequestHandler = async (req, res, next) => {
+  controllerCreateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = schemaCreate.parse(req.body)
 
       const response = await this.projectService.serviceCreateProject(data);
-
-      const { professinalId } = response.data;
 
       res.json({ message: "Success", data: response.data, status: 201 });
     }
@@ -28,7 +25,7 @@ export class ProjectController {
     }
   }
 
-  controllerGetAllProjects: RequestHandler = async (req, res, next) => {
+  controllerGetAllProjects = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const result = await this.projectService.serviceAllProjects(id);
@@ -38,7 +35,7 @@ export class ProjectController {
     }
   }
 
-  controllerUpdateProject: RequestHandler = async (req, res, next) => {
+  controllerUpdateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = schemaUpdate.parse(req.body);
       const result = await this.projectService.serviceUpdateProject(data);
@@ -50,24 +47,15 @@ export class ProjectController {
         res.status(400).json({ error: error.errors });
         return
       }
-
-      if (error.code === 'P2025') {
-        throw new HttpException(404, 'Projeto não encontrado.');
-      }
-      throw new HttpException(500, 'Erro inesperado.');
     }
   }
 
-  controllerDeleteProject: RequestHandler = async (req, res, next) => {
+  controllerDeleteProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const projectId = req.params.id;
       const result = await this.projectService.serviceDeleteProject(projectId);
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
-      if (error.code === 'P2025') {
-        throw new HttpException(404, 'Projeto não encontrado.');
-      }
-      throw new HttpException(500, 'Erro inesperado.');
     }
   }
 }

@@ -1,15 +1,16 @@
-import Project from "../models/Project";
-import { ProjectRepository } from "../repositories/projectRepository";
+import Project from "../../models/Project";
+import { inject } from "../../shared/di/DI";
+import ProjectRepository from "../../repositories/ProjectRepository";
 
-export class ProjectService {
-  // Add methods for project-related logic here
-  // For example, methods to create, update, delete, and retrieve projects
-  constructor(private readonly projectRepository: ProjectRepository) { }
+export default class ProjectService {
+
+  @inject('projectRepository')
+  private projectRepository !: ProjectRepository
 
   async serviceCreateProject(data: any): Promise<any> {
     const project = await Project.modelCreateProject(data);
 
-    await this.projectRepository.repositoryCreateProject(project);
+    await this.projectRepository.createProject(project);
 
     return { message: "Project created successfully", data: project };
   }
