@@ -1,11 +1,11 @@
+
 import Project from "../../models/entities/Project";
-import { inject } from "../../shared/di/DI";
 import ProjectRepository from "../../repositories/projectRepository";
+import { inject } from "../../shared/di/DI";
 
-export default class ProjectService {
-
+export class ProjectService {
   @inject('projectRepository')
-  private projectRepository !: ProjectRepository
+  private projectRepository!: ProjectRepository;
 
   async serviceCreateProject(data: any): Promise<any> {
     const project = await Project.modelCreateProject(data);

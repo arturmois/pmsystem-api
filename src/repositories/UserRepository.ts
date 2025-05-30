@@ -1,9 +1,18 @@
 import { PrismaClient } from "@prisma/client";
-import Company from "../models/Company";
-import Professional from "../models/Professional";
+import Company from "../models/entities/Company";
+import Professional from "../models/entities/Professional";
 import { inject } from "../shared/di/DI";
+import { User } from "../models/entities/User";
 
-export default class UserRepository {
+export default interface IUserRepository {
+  createProfessional(professional: Professional): Promise<void>;
+  createCompany(company: Company): Promise<void>;
+  findByEmail(email: string): Promise<User | null>;
+  findByCpf(cpf: string): Promise<Professional | null>;
+  findByCnpj(cnpj: string): Promise<Company | null>;
+}
+
+export default class UserRepository implements IUserRepository {
   @inject('prisma')
   private prisma: PrismaClient;
 
@@ -49,6 +58,24 @@ export default class UserRepository {
           }
         }
       }
+    });
+  }
+
+  async findByEmail(email: string) {
+    return await this.prisma.user.findUnique({
+      where: { email }
+    });
+  }
+
+  async findByCpf(cpf: string) {
+    return await this.prisma.professional.findUnique({
+      where: { cpf }
+    });
+  }
+
+  async findByCnpj(cnpj: string) {
+    return await this.prisma.company.findUnique({
+      where: { cnpj }
     });
   }
 
