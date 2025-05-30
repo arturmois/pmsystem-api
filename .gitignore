@@ -1,8 +1,10 @@
 node_modules
 dist
 generated
-package-lock.json
+*-lock.json
 # Keep environment variables out of version control
 .env
 *.db
 *.db-journal
+/prisma/*
+migration_lock.toml
