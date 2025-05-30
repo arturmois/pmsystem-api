@@ -1,31 +1,49 @@
-import UserRepository from "../../repositories/UserRepository";
-import RegisterCompany from "../../services/users/RegisterCompany";
+
 import { Registry } from "./DI";
-import ProjectRepository from "../../repositories/projectRepository";
-import RegisterProfessional from "../../services/users/RegisterProfessional";
-import ProjectService from "../../services/projects/ProjectService";
-import UserController from "../../controllers/UserController";
-import Signin from "../../services/users/Signin";
 import { PrismaClient } from "../../../generated/prisma";
+import fs from 'fs';
+import path from 'path';
 
 export default class InitializeDependencies {
-  static initialize() {
-    const registry = Registry.getInstance();
+  static registry(fullPath: string, file: string) {
+    const serviceModule = require(fullPath);
+    const fileClass = serviceModule.default || serviceModule;
 
+    const nameFile = path.basename(file, path.extname(file))
+    const nameFileModify = nameFile.charAt(0).toLowerCase() + nameFile.slice(1)
+
+    Registry.getInstance().provide(nameFileModify, new fileClass())
+  }
+
+  static setProvide(pathName: string) {
+    const repository = path.resolve(__dirname, `../../${pathName}`);
+
+    fs.readdirSync(repository).forEach(file => {
+      const fullPath = path.join(repository, file);
+      const stat = fs.statSync(fullPath);
+
+      if (!stat.isDirectory()) {
+        this.registry(fullPath, file)
+
+        return
+      }
+
+      fs.readdirSync(fullPath).forEach(fileInDirectory => {
+        this.registry(path.join(fullPath, fileInDirectory), fileInDirectory)
+      })
+    })
+  }
+  static initialize() {
     // Core dependencies
-    registry.provide('prisma', new PrismaClient());
+    Registry.getInstance().provide('prisma', new PrismaClient());
 
     // Repositories
-    registry.provide('userRepository', new UserRepository());
-    registry.provide('projectRepository', new ProjectRepository());
+    this.setProvide('repositories')
 
     // Services
-    registry.provide('registerProfessional', new RegisterProfessional());
-    registry.provide('registerCompany', new RegisterCompany());
-    registry.provide('signIn', new Signin());
-    registry.provide('projectService', new ProjectService());
+    this.setProvide('services')
 
     // Controllers
-    registry.provide('userController', new UserController());
+    this.setProvide('controllers')
   }
 }

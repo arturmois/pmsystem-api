@@ -6,7 +6,7 @@ export default class UserRouter {
   private routes
 
   constructor() {
-    this.userController = Registry.getInstance().get('userController');
+    this.userController = Registry.getInstance().inject('userController');
     this.routes = [
       ['post', '/register-professional', this.userController.registerProfessional],
       ['post', '/register-company', this.userController.registerCompany],

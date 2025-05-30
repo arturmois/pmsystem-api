@@ -34,9 +34,6 @@ export default class Routes {
                     const fullPath = `/${this.prefix}/${name}${route[1]}`;
                     const handlers = route.slice(2);
 
-                    console.log(method, `/${this.prefix}/${name}${route[1]}`, handlers);
-
-
                     if (typeof (this.router as any)[method] === 'function') {
                         (this.router as any)[method](fullPath, ...handlers);
                     } else {

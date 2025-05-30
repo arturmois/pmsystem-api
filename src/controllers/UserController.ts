@@ -8,25 +8,25 @@ import SignIn from '../services/users/Signin';
 
 export default class UserController {
   @inject('registerProfessional')
-  private _registerProfessional!: RegisterProfessional;
   @inject('registerCompany')
-  private _registerCompany!: RegisterCompany;
   @inject('signIn')
+  private _registerProfessional!: RegisterProfessional;
+  private _registerCompany!: RegisterCompany;
   private _signIn!: SignIn;
 
-  async registerProfessional(req: Request, res: Response) {
+  registerProfessional = (req: Request, res: Response) => {
     const data = professionalSchema.parse(req.body);
-    await this._registerProfessional.execute(data);
+    this._registerProfessional.execute(data);
     res.json({ message: "Professional registered" });
   }
 
-  async registerCompany(req: Request, res: Response) {
+  registerCompany = async (req: Request, res: Response) => {
     const input = companySchema.parse(req.body);
     await this._registerCompany.execute(input);
     res.json({ message: "Company registered" });
   }
 
-  async login(req: Request, res: Response) {
+  login = async (req: Request, res: Response) => {
     const { email, password } = loginSchema.parse(req.body);
     const result = await this._signIn.execute({ email, password });
     res.json({ token: result.token });

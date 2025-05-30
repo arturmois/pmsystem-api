@@ -1,19 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { schemaCreate, schemaUpdate } from "../models/schemas/projectSchemas";
 import { z } from 'zod';
-import ProjectService from "../services/project/ProjectService";
+import ProjectsService from "../services/project/ProjectsService"
 import { inject } from '../shared/di/DI';
 
-export default class ProjectController {
-  @inject('projectService')
-  private projectService!: ProjectService;
+export default class ProjectsController {
+  @inject('projectsService')
+  private projectsService!: ProjectsService;
 
   controllerCreateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = schemaCreate.parse(req.body)
-
-      const response = await this.projectService.serviceCreateProject(data);
-
+      const response = await this.projectsService.serviceCreateProject(data);
       res.json({ message: "Success", data: response.data, status: 201 });
     }
     catch (error) {
@@ -28,7 +26,7 @@ export default class ProjectController {
   controllerGetAllProjects = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await this.projectService.serviceAllProjects(id);
+      const result = await this.projectsService.serviceAllProjects(id);
       res.json({ message: "Success", data: result, status: 200 });
     } catch (error) {
       console.log(error);
@@ -38,7 +36,7 @@ export default class ProjectController {
   controllerUpdateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = schemaUpdate.parse(req.body);
-      const result = await this.projectService.serviceUpdateProject(data);
+      const result = await this.projectsService.serviceUpdateProject(data);
 
       res.json({ message: "Success", data: result, status: 200 });
 
@@ -53,7 +51,7 @@ export default class ProjectController {
   controllerDeleteProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const projectId = req.params.id;
-      const result = await this.projectService.serviceDeleteProject(projectId);
+      const result = await this.projectsService.serviceDeleteProject(projectId);
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
     }
