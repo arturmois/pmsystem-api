@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import Project from "../models/entities/Project";
 import { inject } from "../shared/di/DI";
 
-export default class ProjectsRepository {
+export default class ProjectRepository {
   @inject('prisma')
   private prisma: PrismaClient;
 

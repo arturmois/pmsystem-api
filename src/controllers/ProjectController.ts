@@ -4,14 +4,14 @@ import { z } from 'zod';
 import ProjectsService from "../services/project/ProjectsService"
 import { inject } from '../shared/di/DI';
 
-export default class ProjectsController {
-  @inject('projectsService')
-  private projectsService!: ProjectsService;
+export default class ProjectController {
+  @inject('projectService')
+  private projectService!: ProjectsService;
 
   controllerCreateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = schemaCreate.parse(req.body)
-      const response = await this.projectsService.serviceCreateProject(data);
+      const response = await this.projectService.serviceCreateProject(data);
       res.json({ message: "Success", data: response.data, status: 201 });
     }
     catch (error) {
@@ -26,7 +26,7 @@ export default class ProjectsController {
   controllerGetAllProjects = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await this.projectsService.serviceAllProjects(id);
+      const result = await this.projectService.serviceAllProjects(id);
       res.json({ message: "Success", data: result, status: 200 });
     } catch (error) {
       console.log(error);
@@ -36,7 +36,7 @@ export default class ProjectsController {
   controllerUpdateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = schemaUpdate.parse(req.body);
-      const result = await this.projectsService.serviceUpdateProject(data);
+      const result = await this.projectService.serviceUpdateProject(data);
 
       res.json({ message: "Success", data: result, status: 200 });
 
@@ -51,7 +51,7 @@ export default class ProjectsController {
   controllerDeleteProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const projectId = req.params.id;
-      const result = await this.projectsService.serviceDeleteProject(projectId);
+      const result = await this.projectService.serviceDeleteProject(projectId);
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
     }

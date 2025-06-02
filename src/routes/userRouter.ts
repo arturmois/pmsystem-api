@@ -1,19 +1,12 @@
+import { Router } from 'express';
 import UserController from '../controllers/UserController';
-import { Registry } from '../shared/di/DI';
 
-export default class UserRouter {
-  private userController: UserController;
-  private routes
+const userRouter = Router();
+const userController = new UserController();
 
-  constructor() {
-    this.userController = Registry.getInstance().inject('userController');
-    this.routes = [
-      ['post', '/register-professional', this.userController.registerProfessional],
-      ['post', '/register-company', this.userController.registerCompany],
-    ]
-  }
+userRouter.post('/professional', userController.registerProfessional);
+userRouter.post('/company', userController.registerCompany);
 
-  getRoutes() {
-    return this.routes;
-  }
-}
+userRouter.post('/login', userController.login);
+
+export default userRouter;

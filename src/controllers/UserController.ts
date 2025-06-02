@@ -8,10 +8,10 @@ import SignIn from '../services/users/Signin';
 
 export default class UserController {
   @inject('registerProfessional')
-  @inject('registerCompany')
-  @inject('signIn')
   private _registerProfessional!: RegisterProfessional;
+  @inject('registerCompany')
   private _registerCompany!: RegisterCompany;
+  @inject('signIn')
   private _signIn!: SignIn;
 
   registerProfessional = (req: Request, res: Response) => {

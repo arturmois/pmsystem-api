@@ -1,22 +1,9 @@
-import { Registry } from '../shared/di/DI';
+import { Router } from 'express';
+import ProjectController from '../controllers/ProjectController';
 
-type RouteDefinition = [methods: string, path: string, handler: Function];
+const projectRouter = Router();
+const projectController = new ProjectController();
 
-export default class ProjectRouter {
-  private routes: RouteDefinition[];
+projectRouter.post('/project', projectController.controllerCreateProject);
 
-  constructor() {
-    const projectsController = Registry.getInstance().inject('projectsController');
-
-    this.routes = [
-      ['post', '/create-project', projectsController.controllerCreateProject],
-      ['get', '/:id', projectsController.controllerGetAllProjects],
-      ['put', '/update-project', projectsController.controllerUpdateProject],
-      ['delete', '/delete-project/:id', projectsController.controllerDeleteProject],
-    ];
-  }
-
-  getRoutes() {
-    return this.routes;
-  }
-}
+export default projectRouter;

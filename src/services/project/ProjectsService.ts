@@ -1,36 +1,33 @@
 import Project from "../../models/entities/Project";
 import { inject } from "../../shared/di/DI";
-import ProjectsRepository from "../../repositories/ProjectsRepository";
+import ProjectRepository from "../../repositories/ProjectRepository";
 
-export default class ProjectsService {
-
-  @inject('projectsRepository')
-  private projectsRepository !: ProjectsRepository
+export default class ProjectService {
+  @inject('projectRepository')
+  private projectRepository !: ProjectRepository
 
   async serviceCreateProject(data: any): Promise<any> {
     const project = await Project.modelCreateProject(data);
 
-    await this.projectsRepository.createProject(project);
+    await this.projectRepository.createProject(project);
 
     return { message: "Project created successfully", data: project };
   }
 
-
   async serviceAllProjects(id: string): Promise<any> {
 
-    return await this.projectsRepository.repositoryAllProjects(id);
+    return await this.projectRepository.repositoryAllProjects(id);
   }
-
 
   async serviceUpdateProject(data: any): Promise<any> {
 
-    return await this.projectsRepository.repositoryUpdateProject(data);
+    return await this.projectRepository.repositoryUpdateProject(data);
   }
 
 
   async serviceDeleteProject(projectId: string): Promise<any> {
     // Logic to delete a project
-    await this.projectsRepository.repositoryDeleteProject(projectId);
+    await this.projectRepository.repositoryDeleteProject(projectId);
     return { message: "Project deleted successfully" };
   }
 }
