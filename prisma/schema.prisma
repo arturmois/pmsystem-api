@@ -12,17 +12,19 @@ datasource db {
 }
 
 model User {
-  user_id    String   @id @default(uuid())
-  email      String   @unique
-  password   String
-  birth_date DateTime
-  role       String // E/P/G (Empresa/Profissional/Gerente)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  user_id      String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  birth_date   DateTime
+  role         String // E/P/G (Empresa/Profissional/Gerente)
+  phone_number String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
   company      Company?
   professional Professional?
   tickets      Ticket[]
+  address      Address[]
 
   @@map("users")
 }
@@ -35,6 +37,8 @@ model Company {
   fantasy_name  String
   social_reason String
   segment       String // Paisagismo, interiores, revestimentos...
+  platform_1    String?
+  platform_2    String?
   monthly_fee   Float
   commission    Float
   created_at    DateTime @default(now())
@@ -47,21 +51,59 @@ model Company {
   @@map("companies")
 }
 
+model Address {
+  address_id   String  @id @default(uuid())
+  user_id      String? @unique
+  desk_id      String?
+  street       String
+  number       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
+  zip_code     String
+  country      String
+  ibge_code    String
+
+  User User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  Desk Desk? @relation(fields: [desk_id], references: [desk_id])
+
+  @@map("addresses")
+}
+
 model Professional {
-  professional_id String   @id @default(uuid())
-  user_id         String   @unique
-  cpf             String   @unique
-  name            String
-  preferred_name  String?
-  type            String // Designer, Arquiteto...
-  desk            String
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  professional_id           String   @id @default(uuid())
+  user_id                   String   @unique
+  desk_id                   String?
+  cpf                       String   @unique
+  name                      String
+  gender                    String
+  activity_area             String // Designer, Arquiteto...
+  preferred_name            String?
+  professional_registration String?
+  social_network            String?
+  created_at                DateTime @default(now())
+  updated_at                DateTime @updatedAt
 
   user     User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   projects Project[]
+  sales    Sale[]
+  desk     Desk?
 
   @@map("professionals")
+}
+
+model Desk {
+  desk_id         String   @id @default(uuid())
+  professional_id String?  @unique
+  cnpj            String   @unique
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  Address      Address[]
+  Professional Professional? @relation(fields: [professional_id], references: [professional_id])
+
+  @@map("desks")
 }
 
 model Project {
@@ -90,7 +132,7 @@ model Budget {
   project Project  @relation(fields: [project_id], references: [project_id], onDelete: Cascade)
   company Company? @relation(fields: [company_id], references: [company_id], onDelete: Cascade)
   tickets Ticket[]
-  sales   Sale[]
+  sales   Sale?
 
   @@map("budgets")
 }
@@ -111,15 +153,17 @@ model Ticket {
 }
 
 model Sale {
-  sale_id    String   @id @default(uuid())
-  budget_id  String
-  company_id String
-  value      Float
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  sale_id         String   @id @default(uuid())
+  company_id      String
+  professional_id String
+  budget_id       String?  @unique
+  value           Float
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
-  budget  Budget  @relation(fields: [budget_id], references: [budget_id], onDelete: Cascade)
-  company Company @relation(fields: [company_id], references: [company_id], onDelete: Cascade)
+  company      Company      @relation(fields: [company_id], references: [company_id], onDelete: Cascade)
+  professional Professional @relation(fields: [professional_id], references: [professional_id], onDelete: Cascade)
+  budget       Budget?      @relation(fields: [budget_id], references: [budget_id], onDelete: Cascade)
 
   @@map("sales")
 }
