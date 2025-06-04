@@ -12,7 +12,6 @@ export default class InitializeDependencies {
     const nameFileModify = nameFile.charAt(0).toLowerCase() + nameFile.slice(1);
 
     Registry.getInstance().provide(nameFileModify, new fileClass());
-    console.log(nameFileModify);
   }
 
   static setProvide(pathName: string) {

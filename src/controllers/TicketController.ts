@@ -11,7 +11,7 @@ export default class TicketController {
   @inject("ticketService")
   private ticketService!: TicketService;
 
-  async create(req: Request, res: Response) {
+  create = async (req: Request, res: Response) => {
     try {
       const validatedData = createTicketSchema.parse(req.body);
       const ticket = await this.ticketService.createTicket(validatedData);
@@ -19,7 +19,7 @@ export default class TicketController {
     } catch (error: any) {
       res.status(400).json({ error: error.errors || error.message });
     }
-  }
+  };
 
   async getAll(req: Request, res: Response) {
     try {

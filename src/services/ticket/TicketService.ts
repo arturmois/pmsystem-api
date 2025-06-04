@@ -7,9 +7,7 @@ export default class TicketService {
   private ticketRepository!: TicketRepository;
 
   async createTicket(data: any) {
-    console.log("data", data);
     const ticket = await Ticket.modelCreateTicket(data);
-    console.log("chegou aqui");
     return await this.ticketRepository.create(ticket);
   }
 

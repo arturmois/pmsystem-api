@@ -3,7 +3,8 @@ import { PrismaClient } from "@prisma/client";
 import { inject } from "../shared/di/DI";
 
 export default class TicketRepository {
-  @inject("prisma") private prisma!: PrismaClient;
+  @inject("prisma")
+  private prisma!: PrismaClient;
 
   async create(ticket: Ticket) {
     return await this.prisma.ticket.create({
