@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import { inject } from "../shared/di/DI";
-import TicketService from "../services/ticket/TicketService";
+
 import {
   createTicketSchema,
   updateTicketSchema,
 } from "../models/schemas/ticketSchema";
+import TicketService from "../services/ticket/TicketService";
 
 export default class TicketController {
-  @inject("ticketService") private ticketService!: TicketService;
+  @inject("ticketService")
+  private ticketService!: TicketService;
 
   async create(req: Request, res: Response) {
     try {

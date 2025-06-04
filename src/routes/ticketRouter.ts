@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { Registry } from "../shared/di/DI";
+import TicketController from "../controllers/TicketController";
 
 const router = Router();
 
-const ticketController = Registry.getInstance().inject("ticketController");
+const ticketController = new TicketController();
 
-router.post("/", (req, res) => ticketController.create(req, res));
-router.get("/", (req, res) => ticketController.getAll(req, res));
-router.get("/:id", (req, res) => ticketController.getById(req, res));
-router.put("/:id", (req, res) => ticketController.update(req, res));
-router.delete("/:id", (req, res) => ticketController.delete(req, res));
+router.post("/create-ticket", ticketController.create);
+router.get("/ticket", ticketController.getAll);
+// router.get("/ticket/:id", ticketController.getById);
+router.put("/ticket/:id", ticketController.update);
+router.delete("/ticket/:id", ticketController.delete);
 
 export default router;
