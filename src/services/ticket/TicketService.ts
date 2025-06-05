@@ -3,7 +3,8 @@ import TicketRepository from "../../repositories/TicketRepository";
 import { inject } from "../../shared/di/DI";
 
 export default class TicketService {
-  @inject("ticketRepository") private ticketRepository!: TicketRepository;
+  @inject("ticketRepository")
+  private ticketRepository!: TicketRepository;
 
   async createTicket(data: any) {
     const ticket = await Ticket.modelCreateTicket(data);
