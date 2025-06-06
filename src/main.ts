@@ -4,12 +4,16 @@ import { PORT } from "./config/env";
 import { ZodError } from "zod";
 import InitializeDependencies from "./shared/di/InitializeDependencies";
 import routes from "./routes";
+import rateLimiter from "./shared/middlewares/rateLimiter";
 
 function initializeApp() {
   const app = express();
   app.use(cors());
   app.use(express.json());
+
   InitializeDependencies.initialize();
+
+  app.use(rateLimiter);
 
   app.use("/api", routes);
 
