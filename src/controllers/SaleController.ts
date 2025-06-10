@@ -1,7 +1,6 @@
 import { inject } from "../shared/di/DI";
 import SaleService from "../services/sale/SaleService";
 import { NextFunction, Request, Response } from "express";
-import { schemaCreate } from "../models/schemas/projectSchemas";
 import z from "zod";
 
 export default class SaleController {
@@ -14,8 +13,8 @@ export default class SaleController {
     next: NextFunction
   ) => {
     try {
-      const data = schemaCreate.parse(req.body);
-      const response = await this.saleService.serviceCreateSale(data);
+      const input = req.body;
+      const response = await this.saleService.serviceCreateSale(input);
       res.json({ message: "Success", data: response.data, status: 201 });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -32,8 +31,8 @@ export default class SaleController {
     next: NextFunction
   ) => {
     try {
-      const data = schemaCreate.parse(req.body);
-      const response = await this.saleService.serviceCreateSaleBudget(data);
+      const input = req.body;
+      const response = await this.saleService.serviceCreateSaleBudget(input);
       res.json({ message: "Success", data: response.data, status: 201 });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -85,8 +84,8 @@ export default class SaleController {
     next: NextFunction
   ) => {
     try {
-      const data = schemaCreate.parse(req.body);
-      const response = await this.saleService.serviceUpdateSale(data);
+      const input = req.body;
+      const response = await this.saleService.serviceUpdateSale(input);
       res.json({ message: "Success", data: response.data, status: 200 });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -103,9 +102,9 @@ export default class SaleController {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
-      const response = await this.saleService.serviceDeleteSale(id);
-      res.json({ message: "Success", data: response.data, status: 200 });
+      const input = req.body;
+      await this.saleService.serviceDeleteSale(input);
+      res.json({ message: "Success", status: 200 });
     } catch (error) {
       if (error instanceof z.ZodError) {
         res.status(400).json({ error: error.errors });

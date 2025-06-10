@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const userSchema = z.object({
+export const CreateUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   birthDate: z.string().datetime().transform(str => new Date(str)),
@@ -9,7 +9,7 @@ export const userSchema = z.object({
   address: z.string().optional().default('')
 });
 
-export const professionalSchema = userSchema.extend({
+export const CreateProfessionalSchema = CreateUserSchema.extend({
   cpf: z.string().length(11),
   name: z.string(),
   gender: z.string(),
@@ -20,7 +20,7 @@ export const professionalSchema = userSchema.extend({
   desk: z.string().optional().default('')
 });
 
-export const companySchema = userSchema.extend({
+export const CreateCompanySchema = CreateUserSchema.extend({
   cnpj: z.string().length(14),
   fantasyName: z.string(),
   socialReason: z.string(),

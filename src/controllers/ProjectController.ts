@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { schemaCreate, schemaUpdate } from "../models/schemas/projectSchemas";
 import { z } from 'zod';
 import ProjectsService from "../services/project/ProjectService"
 import { inject } from '../shared/di/DI';
@@ -10,8 +9,8 @@ export default class ProjectController {
 
   controllerCreateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = schemaCreate.parse(req.body)
-      const response = await this.projectService.serviceCreateProject(data);
+      const input = req.body;
+      const response = await this.projectService.serviceCreateProject(input);
       res.json({ message: "Success", data: response.data, status: 201 });
     }
     catch (error) {
@@ -35,12 +34,10 @@ export default class ProjectController {
 
   controllerUpdateProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = schemaUpdate.parse(req.body);
-      const result = await this.projectService.serviceUpdateProject(data);
-
+      const input = req.body;
+      const result = await this.projectService.serviceUpdateProject(input);
       res.json({ message: "Success", data: result, status: 200 });
-
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof z.ZodError) {
         res.status(400).json({ error: error.errors });
         return
@@ -50,8 +47,8 @@ export default class ProjectController {
 
   controllerDeleteProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const projectId = req.body.id;
-      const result = await this.projectService.serviceDeleteProject(projectId);
+      const input = req.body;
+      await this.projectService.serviceDeleteProject(input);
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
     }

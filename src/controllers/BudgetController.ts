@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
-import { schemaCreate, schemaUpdate } from "../models/schemas/budgetSchemas";
 import BudgetService from "../services/budget/BudgetService"
 import { inject } from '../shared/di/DI';
 
@@ -10,8 +9,8 @@ class BudgetController {
 
 	controllertCreateBudge = async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const data = schemaCreate.parse(req.body)
-			const response = await this.budgetService.serviceCreateBudget(data)
+			const input = req.body;
+			const response = await this.budgetService.serviceCreateBudget(input)
 			res.json({ message: "Success", data: response.data, status: 201 });
 		}
 		catch (error) {
@@ -22,6 +21,7 @@ class BudgetController {
 			}
 		}
 	}
+
 	controllertGetAllBudgets = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { id } = req.params;
@@ -32,11 +32,12 @@ class BudgetController {
 			console.log(error);
 		}
 	}
+
 	controllerUpdateBudget = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { id } = req.params;
-			const data = schemaUpdate.parse(req.body);
-			const response = await this.budgetService.serviceUpdateBudget(id, data);
+			const input = req.body;
+			const response = await this.budgetService.serviceUpdateBudget(id, input);
 			res.json({ message: "Budget updated successfully", data: response, status: 200 });
 		} catch (error) {
 			if (error instanceof z.ZodError) {
@@ -46,6 +47,7 @@ class BudgetController {
 			}
 		}
 	}
+
 	controllerDeleteBudget = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { id } = req.params;
