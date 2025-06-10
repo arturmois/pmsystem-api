@@ -29,7 +29,7 @@ export default class ProjectController {
       const result = await this.projectService.serviceAllProjects(id);
       res.json({ message: "Success", data: result, status: 200 });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

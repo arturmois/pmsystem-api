@@ -3,7 +3,6 @@ import { z } from 'zod';
 import { schemaCreate, schemaUpdate } from "../models/schemas/budgetSchemas";
 import BudgetService from "../services/budget/BudgetService"
 import { inject } from '../shared/di/DI';
-import { log } from 'console';
 
 class BudgetController {
 	@inject('budgetService')
@@ -12,7 +11,6 @@ class BudgetController {
 	controllertCreateBudge = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const data = schemaCreate.parse(req.body)
-			log(data)
 			const response = await this.budgetService.serviceCreateBudget(data)
 			res.json({ message: "Success", data: response.data, status: 201 });
 		}
@@ -28,7 +26,6 @@ class BudgetController {
 		try {
 			const { id } = req.params;
 			const result = await this.budgetService.serviceAllBudgets(id);
-			console.log(result);
 
 			res.json({ message: "Success", data: result, status: 200 });
 		} catch (error) {

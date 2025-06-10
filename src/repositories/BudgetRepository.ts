@@ -36,14 +36,15 @@ export default class BudgetRepository {
   }
 
   async updateBudget(id: String, data: any) {
-    await this.prisma.budget.update({
-      where: {
-        budget_id: id,
-      },
-      data: {
-        description: data.description,
-        status: data.status,
-      }
+    const existing = await this.prisma.budget.findUnique({ where: { budget_id: id } });
+
+    if (!existing) {
+      throw new Error('Orçamento não encontrado');
+    }
+
+    return await this.prisma.budget.update({
+      where: { budget_id: id },
+      data
     });
   }
 
