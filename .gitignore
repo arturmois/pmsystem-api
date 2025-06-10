@@ -8,3 +8,6 @@ generated
 *.db-journal
 /prisma/*
 migration_lock.toml
+
+# PNPM
+pnpm-lock.yaml
