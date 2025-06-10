@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { schemaCreate, schemaUpdate } from "../models/schemas/projectSchemas";
 import { z } from 'zod';
-import ProjectsService from "../services/project/ProjectsService"
+import ProjectsService from "../services/project/ProjectService"
 import { inject } from '../shared/di/DI';
 
 export default class ProjectController {
@@ -50,7 +50,7 @@ export default class ProjectController {
 
   controllerDeleteProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const projectId = req.params.id;
+      const projectId = req.body.id;
       const result = await this.projectService.serviceDeleteProject(projectId);
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
