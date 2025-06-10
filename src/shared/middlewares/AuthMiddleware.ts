@@ -1,36 +1,35 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { NextFunction, Response, Request } from 'express';
+import { Secret, verify } from 'jsonwebtoken';
+import AppError from '../errors/AppError';
+import { JWT_SECRET } from '../../config/env';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-interface AuthenticatedRequest extends Request {
+interface ITokenPayload {
+  iat: number;
+  exp: number;
   userId: string;
 }
 
 export default class AuthMiddleware {
-  public static execute = (req: Request, res: Response, next: NextFunction): void => {
-    const authHeader = req.headers.authorization;
+  static execute(
+    request: any,
+    response: Response,
+    next: NextFunction,
+  ): void {
+    const authHeader = request.headers.authorization;
+
     if (!authHeader) {
-      res.status(401).json({ error: 'No token provided' });
-      return;
+      throw new AppError('JWT Token is missing.', 401);
     }
-    const parts = authHeader.split(' ');
-    if (parts.length !== 2) {
-      res.status(401).json({ error: 'Token error' });
-      return;
+
+    const [, token] = authHeader.split(' ');
+
+    try {
+      const decodedToken = verify(token, JWT_SECRET as Secret);
+      const { userId } = decodedToken as ITokenPayload;
+      request.userId = userId;
+      return next();
+    } catch (error) {
+      throw new AppError('Invalid JWT Token.', 401);
     }
-    const [scheme, token] = parts;
-    if (!/^Bearer$/i.test(scheme)) {
-      res.status(401).json({ error: 'Token malformatted' });
-      return;
-    }
-    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
-      if (err) {
-        res.status(401).json({ error: 'Token invalid' });
-        return;
-      }
-      (req as AuthenticatedRequest).userId = decoded.id;
-      next();
-    });
   }
 }

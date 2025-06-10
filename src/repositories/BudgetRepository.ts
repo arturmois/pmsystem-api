@@ -1,25 +1,27 @@
-import { PrismaClient } from "@prisma/client";
 import { inject } from "../shared/di/DI";
 import Budget from "../models/entities/Budget";
+import type { PrismaClient } from "../../generated/prisma";
 
 export default class BudgetRepository {
   @inject('prisma')
-  private prisma: PrismaClient;
+  private prisma!: PrismaClient;
 
-  async createBudget(budget: Budget) {
-    const data = budget.getBudget();
-
+  async create(budget: Budget) {
     await this.prisma.budget.create({
       data: {
-        company_id: data.companyId,
-        project_id: data.projectId,
-        description: data.description,
-        status: data.status,
+        budget_id: budget.getBudgetId(),
+        description: budget.getDescription(),
+        status: budget.getStatus(),
+        project: {
+          connect: {
+            project_id: budget.getProjectId()
+          }
+        },
       }
     })
   }
 
-  async repositoryAllBudgets(projectId: string) {
+  async getAll(projectId: string) {
     const budgets = await this.prisma.budget.findMany({
       where: {
         project_id: projectId
@@ -35,7 +37,14 @@ export default class BudgetRepository {
     }));
   }
 
-  async updateBudget(id: String, data: any) {
+
+  async getById(id: string) {
+    return await this.prisma.budget.findUnique({
+      where: { budget_id: id },
+    });
+  }
+
+  async update(id: string, data: any) {
     const existing = await this.prisma.budget.findUnique({ where: { budget_id: id } });
 
     if (!existing) {
@@ -48,11 +57,12 @@ export default class BudgetRepository {
     });
   }
 
-  async deleteBudget(id: string) {
+  async delete(id: string) {
     await this.prisma.budget.delete({
       where: {
         budget_id: id,
       }
     });
   }
+
 }

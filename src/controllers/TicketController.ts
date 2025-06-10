@@ -6,11 +6,12 @@ export default class TicketController {
   @inject("ticketService")
   private ticketService!: TicketService;
 
-  create = async (req: Request, res: Response) => {
+  create = async (req: any, res: Response) => {
     try {
       const input = req.body;
-      const ticket = await this.ticketService.createTicket(input);
-      res.status(201).json(ticket);
+      input.userId = req.userId;
+      const result = await this.ticketService.create(input);
+      res.status(201).json(result);
     } catch (error: any) {
       res.status(400).json({ error: error.errors || error.message });
     }
@@ -18,7 +19,7 @@ export default class TicketController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const tickets = await this.ticketService.getAllTickets();
+      const tickets = await this.ticketService.getAll();
       res.json(tickets);
     } catch (error) {
       res.status(500).json({ error: "Erro ao buscar tickets" });
@@ -28,7 +29,7 @@ export default class TicketController {
   async getById(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const ticket = await this.ticketService.getTicketById(id);
+      const ticket = await this.ticketService.getById(id);
       if (!ticket)
         return res.status(404).json({ error: "Ticket não encontrado" });
       res.json(ticket);
@@ -40,7 +41,7 @@ export default class TicketController {
   async update(req: Request, res: Response) {
     try {
       const input = req.body;
-      const ticket = await this.ticketService.updateTicket(
+      const ticket = await this.ticketService.update(
         req.params.id,
         input
       );
@@ -53,7 +54,7 @@ export default class TicketController {
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      await this.ticketService.deleteTicket(id);
+      await this.ticketService.delete(id);
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Erro ao deletar ticket" });

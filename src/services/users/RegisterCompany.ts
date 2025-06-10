@@ -23,11 +23,11 @@ export default class RegisterCompany {
       input.commission,
       input.platform1,
       input.platform2);
-    const userExists = await this.userRepository.findByEmail(input.email);
+    const userExists = await this.userRepository.getByEmail(input.email);
     if (userExists) {
       throw new AppError('User already exists', 400);
     }
-    const companyExists = await this.userRepository.findByCnpj(input.cnpj);
+    const companyExists = await this.userRepository.getByCnpj(input.cnpj);
     if (companyExists) {
       throw new AppError('Company already exists', 400);
     }

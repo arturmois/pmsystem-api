@@ -1,27 +1,27 @@
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../../generated/prisma";
 import Project from "../models/entities/Project";
 import { inject } from "../shared/di/DI";
 
 export default class ProjectRepository {
   @inject('prisma')
-  private prisma: PrismaClient;
+  private prisma!: PrismaClient;
 
-  async createProject(project: Project) {
-    const data = project.getProject();
-    // Ensure that the startDate is a valid Date object
-
+  async create(project: Project) {
     await this.prisma.project.create({
       data: {
-        project_id: data.projectId,
-        professional_id: data.professionalId,
-        title: data.title,
-        start_date: new Date(data.startDate)
+        project_id: project.getProjectId(),
+        title: project.getTitle(),
+        start_date: new Date(project.getStartDate()),
+        professional: {
+          connect: {
+            user_id: project.getProfessionalId()
+          }
+        }
       }
     })
   }
 
   async repositoryAllProjects(id: string) {
-    // Retrieve all projects associated with the professional ID
     return await this.prisma.project.findMany({
       where: {
         professional_id: id,
@@ -30,7 +30,15 @@ export default class ProjectRepository {
         start_date: 'asc',
       },
     })
+  }
 
+  async getById(projectId: string) {
+    console.log(projectId);
+    return await this.prisma.project.findUnique({
+      where: {
+        project_id: projectId,
+      },
+    });
   }
 
   async repositoryUpdateProject(data: any) {

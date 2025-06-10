@@ -6,9 +6,9 @@ import { CreateProjectSchema, UpdateProjectSchema } from '../models/schemas/proj
 const router = Router();
 const projectController = new ProjectController();
 
-router.post('/', ValidationMiddleware.execute(CreateProjectSchema), projectController.controllerCreateProject);
-router.get('/:id', projectController.controllerGetAllProjects);
-router.put('/:id', ValidationMiddleware.execute(UpdateProjectSchema), projectController.controllerUpdateProject);
-router.delete('/', projectController.controllerDeleteProject);
+router.post('/', ValidationMiddleware.execute(CreateProjectSchema), projectController.create);
+router.get('/', projectController.getAll);
+router.put('/:id', ValidationMiddleware.execute(UpdateProjectSchema), projectController.update);
+router.delete('/', projectController.delete);
 
 export default router;

@@ -4,7 +4,7 @@ export const CreateUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   birthDate: z.string().datetime().transform(str => new Date(str)),
-  role: z.enum(['P', 'C', 'G']),
+  role: z.enum(['COMPANY', 'PROFESSIONAL', 'ADMIN']),
   phoneNumber: z.string().optional().default(''),
   address: z.string().optional().default('')
 });

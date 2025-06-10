@@ -11,11 +11,11 @@ export default class RegisterProfessional {
     const professional = await Professional.createProfessional(input.email, input.password, input.birthDate, input.role,
       input.phoneNumber, input.address, input.cpf, input.name, input.gender, input.activityArea, input.preferredName,
       input.professionalRegistration, input.socialNetwork, input.desk);
-    const userExists = await this.userRepository.findByEmail(input.email);
+    const userExists = await this.userRepository.getByEmail(input.email);
     if (userExists) {
       throw new AppError('User already exists', 400);
     }
-    const professionalExists = await this.userRepository.findByCpf(input.cpf);
+    const professionalExists = await this.userRepository.getByCpf(input.cpf);
     if (professionalExists) {
       throw new AppError('Professional already exists', 400);
     }

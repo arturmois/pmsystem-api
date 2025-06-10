@@ -1,44 +1,42 @@
 import crypto from 'crypto';
 
 export default class Budget {
-  private budget_id: string;
-  private project_id: string;
-  private company_id: string;
+  private budgetId: string;
+  private projectId: string;
+  private companyId: string;
   private description: string;
   private status: string;
 
-  constructor(
-    budgetId: string,
-    projectId: string,
-    companyId: string,
-    description: string,
-    status: string = 'pending',
-  ) {
-    this.budget_id = budgetId;
-    this.project_id = projectId;
-    this.company_id = companyId;
+  constructor(budgetId: string, projectId: string, companyId: string, description: string) {
+    this.budgetId = budgetId;
+    this.projectId = projectId;
+    this.companyId = companyId;
     this.description = description;
-    this.status = status;
+    this.status = "pending";
   }
 
-  static async modelCreateBudget(data: any) {
+  static async create(companyId: string, description: string, projectId: string) {
     const budgetId = crypto.randomUUID();
-    return new Budget(
-      budgetId,
-      data.projectId,
-      data.companyId,
-      data.description,
-      data.status || 'pending',
-    );
+    return new Budget(budgetId, projectId, companyId, description);
   }
 
-  getBudget() {
-    return {
-      budgetId: this.budget_id,
-      projectId: this.project_id,
-      companyId: this.company_id,
-      description: this.description,
-      status: this.status,
-    };
+  getBudgetId() {
+    return this.budgetId;
+  }
+
+  getProjectId() {
+    return this.projectId;
+  }
+
+  getCompanyId() {
+    return this.companyId;
+  }
+
+  getDescription() {
+    return this.description;
+  }
+
+  getStatus() {
+    return this.status;
   }
 }

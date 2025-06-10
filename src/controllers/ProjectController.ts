@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
+import { NextFunction, Response, Request } from 'express';
 import ProjectsService from "../services/project/ProjectService"
 import { inject } from '../shared/di/DI';
 
@@ -7,50 +6,46 @@ export default class ProjectController {
   @inject('projectService')
   private projectService!: ProjectsService;
 
-  controllerCreateProject = async (req: Request, res: Response, next: NextFunction) => {
+  create = async (req: any, res: Response, next: NextFunction) => {
     try {
       const input = req.body;
-      const response = await this.projectService.serviceCreateProject(input);
-      res.json({ message: "Success", data: response.data, status: 201 });
+      input.userId = req.userId;
+      const result = await this.projectService.create(input);
+      res.status(201).json(result);
     }
     catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: error.errors });
-      } else {
-        next(error);
-      }
+      next(error);
     }
   }
 
-  controllerGetAllProjects = async (req: Request, res: Response, next: NextFunction) => {
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const result = await this.projectService.serviceAllProjects(id);
+      const result = await this.projectService.getAll(id);
       res.json({ message: "Success", data: result, status: 200 });
     } catch (error) {
       console.error(error);
     }
   }
 
-  controllerUpdateProject = async (req: Request, res: Response, next: NextFunction) => {
+  update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = req.body;
-      const result = await this.projectService.serviceUpdateProject(input);
+      const result = await this.projectService.update(input);
       res.json({ message: "Success", data: result, status: 200 });
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: error.errors });
-        return
-      }
+      next(error);
     }
   }
 
-  controllerDeleteProject = async (req: Request, res: Response, next: NextFunction) => {
+  delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = req.body;
-      await this.projectService.serviceDeleteProject(input);
+      await this.projectService.delete(input);
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
+      next(error);
     }
   }
+
 }

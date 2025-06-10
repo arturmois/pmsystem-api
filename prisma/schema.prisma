@@ -16,7 +16,7 @@ model User {
   email        String   @unique
   password     String
   birth_date   DateTime
-  role         String // E/P/G (Empresa/Profissional/Gerente)
+  role         String // COMPANY/PROFESSIONAL/ADMIN
   phone_number String?
   address      String?
   created_at   DateTime @default(now())
