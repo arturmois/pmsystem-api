@@ -1,10 +1,11 @@
 import express from "express";
+import 'express-async-errors';
 import cors from "cors";
 import { PORT } from "./config/env";
-import { ZodError } from "zod";
 import InitializeDependencies from "./shared/di/InitializeDependencies";
 import routes from "./routes";
 import rateLimiter from "./shared/middlewares/rateLimiter";
+import ErrorHandleMiddleware from "./shared/middlewares/ErrorHandleMiddleware";
 
 function initializeApp() {
   const app = express();
@@ -17,20 +18,7 @@ function initializeApp() {
 
   app.use("/api", routes);
 
-  app.use(
-    (
-      err: any,
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction
-    ) => {
-      if (err instanceof ZodError) {
-        res.status(400).json({ error: err.errors });
-      } else {
-        res.status(500).json({ error: err.message });
-      }
-    }
-  );
+  app.use(ErrorHandleMiddleware.handleError);
 
   return app;
 }

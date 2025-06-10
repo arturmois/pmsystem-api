@@ -36,10 +36,10 @@ model Company {
   fantasy_name  String
   social_reason String
   segment       String // Paisagismo, interiores, revestimentos...
-  platform_1    String?
-  platform_2    String?
   monthly_fee   Float
   commission    Float
+  platform_1    String?
+  platform_2    String?
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 

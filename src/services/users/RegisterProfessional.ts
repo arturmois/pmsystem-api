@@ -8,24 +8,16 @@ export default class RegisterProfessional {
   private userRepository!: IUserRepository;
 
   async execute(input: Input): Promise<Output> {
-    const professional = await Professional.createProfessional(
-      input.email,
-      input.password,
-      input.birthDate,
-      input.role,
-      input.phoneNumber,
-      input.address,
-      input.cpf,
-      input.name,
-      input.gender,
-      input.activityArea,
-      input.preferredName,
-      input.professionalRegistration,
-      input.socialNetwork,
-      input.desk);
+    const professional = await Professional.createProfessional(input.email, input.password, input.birthDate, input.role,
+      input.phoneNumber, input.address, input.cpf, input.name, input.gender, input.activityArea, input.preferredName,
+      input.professionalRegistration, input.socialNetwork, input.desk);
     const userExists = await this.userRepository.findByEmail(input.email);
     if (userExists) {
       throw new AppError('User already exists', 400);
+    }
+    const professionalExists = await this.userRepository.findByCpf(input.cpf);
+    if (professionalExists) {
+      throw new AppError('Professional already exists', 400);
     }
     await this.userRepository.createProfessional(professional);
     return { userId: professional.getUserId() };

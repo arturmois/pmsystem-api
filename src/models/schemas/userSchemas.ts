@@ -4,7 +4,7 @@ export const userSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   birthDate: z.string().datetime().transform(str => new Date(str)),
-  role: z.enum(['E', 'P', 'G']),
+  role: z.enum(['P', 'C', 'G']),
   phoneNumber: z.string().optional().default(''),
   address: z.string().optional().default('')
 });
@@ -22,10 +22,11 @@ export const professionalSchema = userSchema.extend({
 
 export const companySchema = userSchema.extend({
   cnpj: z.string().length(14),
-  address: z.string(),
   fantasyName: z.string(),
   socialReason: z.string(),
   segment: z.string(),
   monthlyFee: z.number(),
-  commission: z.number()
+  commission: z.number(),
+  platform1: z.string().optional().default(''),
+  platform2: z.string().optional().default('')
 });

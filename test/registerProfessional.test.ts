@@ -3,7 +3,7 @@ import prisma from "../src/config/database";
 import RegisterProfessional from "../src/services/users/RegisterProfessional";
 import { Registry } from "../src/shared/di/DI";
 
-let userService: RegisterProfessional;
+let registerProfessional: RegisterProfessional;
 let userRepository: UserRepository;
 
 beforeEach(async () => {
@@ -13,7 +13,7 @@ beforeEach(async () => {
   Registry.getInstance().provide('prisma', prisma);
   userRepository = new UserRepository();
   Registry.getInstance().provide('userRepository', userRepository);
-  userService = new RegisterProfessional();
+  registerProfessional = new RegisterProfessional();
 });
 
 afterEach(async () => {
@@ -38,7 +38,7 @@ test("should register a professional", async () => {
     desk: "Desk 123"
   };
 
-  await userService.execute(professional);
+  await registerProfessional.execute(professional);
 
   const user = await userRepository.findByEmail(professional.email);
   expect(user).toBeTruthy();
