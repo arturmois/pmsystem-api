@@ -7,11 +7,7 @@ export default class SaleController {
   @inject("saleService")
   private saleService!: SaleService;
 
-  controllerCreateSale = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  controllerCreateSale = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = req.body;
       const response = await this.saleService.serviceCreateSale(input);

@@ -21,10 +21,12 @@ export default class ProjectRepository {
     })
   }
 
-  async repositoryAllProjects(id: string) {
+  async getAll(userId: string) {
     return await this.prisma.project.findMany({
       where: {
-        professional_id: id,
+        professional: {
+          user_id: userId
+        }
       },
       orderBy: {
         start_date: 'asc',
@@ -41,8 +43,7 @@ export default class ProjectRepository {
     });
   }
 
-  async repositoryUpdateProject(data: any) {
-    // Update the project with the given projectId
+  async update(data: any) {
     return await this.prisma.project.update({
       where: {
         project_id: data.projectId,
@@ -54,8 +55,7 @@ export default class ProjectRepository {
     });
   }
 
-  async repositoryDeleteProject(projectId: string) {
-    // Delete the project with the given projectId
+  async delete(projectId: string) {
     return await this.prisma.project.delete({
       where: {
         project_id: projectId,

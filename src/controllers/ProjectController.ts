@@ -18,11 +18,11 @@ export default class ProjectController {
     }
   }
 
-  getAll = async (req: Request, res: Response, next: NextFunction) => {
+  getAll = async (req: any, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const result = await this.projectService.getAll(id);
-      res.json({ message: "Success", data: result, status: 200 });
+      const userId = req.userId;
+      const result = await this.projectService.getAll(userId);
+      res.json(result);
     } catch (error) {
       console.error(error);
     }

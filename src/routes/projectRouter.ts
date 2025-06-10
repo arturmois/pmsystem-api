@@ -7,6 +7,7 @@ const router = Router();
 const projectController = new ProjectController();
 
 router.post('/', ValidationMiddleware.execute(CreateProjectSchema), projectController.create);
+router.get('/:userId', projectController.getAll);
 router.get('/', projectController.getAll);
 router.put('/:id', ValidationMiddleware.execute(UpdateProjectSchema), projectController.update);
 router.delete('/', projectController.delete);

@@ -13,13 +13,15 @@ export default class TicketService {
   @inject('budgetRepository')
   private budgetRepository!: BudgetRepository;
 
+  private allowedRoles = ['PROFESSIONAL', 'COMPANY'];
+
   async create(input: any) {
     const user = await this.userRepository.getById(input.userId);
     if (!user) {
       throw new AppError('User not found', 404);
     }
-    if (user.getRole() !== 'PROFESSIONAL') {
-      throw new AppError('User is not a professional', 403);
+    if (!this.allowedRoles.includes(user.getRole())) {
+      throw new AppError('User is not allowed to create a ticket', 403);
     }
     const budget = await this.budgetRepository.getById(input.budgetId);
     if (!budget) {

@@ -16,13 +16,10 @@ export default class AuthMiddleware {
     next: NextFunction,
   ): void {
     const authHeader = request.headers.authorization;
-
     if (!authHeader) {
       throw new AppError('JWT Token is missing.', 401);
     }
-
     const [, token] = authHeader.split(' ');
-
     try {
       const decodedToken = verify(token, JWT_SECRET as Secret);
       const { userId } = decodedToken as ITokenPayload;

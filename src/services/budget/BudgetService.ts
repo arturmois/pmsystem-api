@@ -15,7 +15,6 @@ export default class BudgetService {
   private projectRepository!: ProjectRepository
 
   async create(input: any) {
-    console.log(input);
     const professional = await this.userRepository.getProfessionalByUserId(input.userId);
     if (!professional) {
       throw new AppError('User not found', 404);
