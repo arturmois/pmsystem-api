@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import 'express-async-errors';
 import cors from "cors";
 import { PORT } from "./config/env";
@@ -18,7 +18,9 @@ function initializeApp() {
 
   app.use("/api", routes);
 
-  app.use(ErrorHandleMiddleware.handleError);
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    ErrorHandleMiddleware.handleError(err, req, res, next);
+  });
 
   return app;
 }

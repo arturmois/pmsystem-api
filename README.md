@@ -94,8 +94,8 @@ npm start
 
 ### Authentication
 - POST /api/users/login
-- POST /api/users/register-professional
-- POST /api/users/register-company
+- POST /api/users/professional
+- POST /api/users/company
 - GET /api/users/user
 
 ### Projects
