@@ -16,19 +16,24 @@ export default class UserRepository implements IUserRepository {
   @inject('prisma')
   private prisma: PrismaClient;
 
-  async createProfessional(professional: Professional) {
+  async createProfessional(professional: Professional): Promise<void> {
     await this.prisma.user.create({
       data: {
         email: professional.getEmail(),
         password: professional.getPassword(),
         birth_date: professional.getBirthDate(),
         role: professional.getRole(),
+        phone_number: professional.getPhoneNumber(),
+        address: professional.getAddress(),
         professional: {
           create: {
-            name: professional.getName(),
-            preferred_name: professional.getPreferredName(),
             cpf: professional.getCpf(),
-            type: professional.getType(),
+            name: professional.getName(),
+            gender: professional.getGender(),
+            activity_area: professional.getActivityArea(),
+            preferred_name: professional.getPreferredName(),
+            professional_registration: professional.getProfessionalRegistration(),
+            social_network: professional.getSocialNetwork(),
             desk: professional.getDesk()
           }
         }
@@ -39,7 +44,7 @@ export default class UserRepository implements IUserRepository {
     });
   }
 
-  async createCompany(company: Company) {
+  async createCompany(company: Company): Promise<void> {
     await this.prisma.user.create({
       data: {
         email: company.getEmail(),
@@ -61,19 +66,25 @@ export default class UserRepository implements IUserRepository {
     });
   }
 
-  async findByEmail(email: string) {
-    return await this.prisma.user.findUnique({
-      where: { email }
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      include: {
+        professional: true,
+        company: true
+      }
     });
+    if (!user) return null;
+    return new User(user.user_id, user.email, user.password, user.birth_date, user.role, user.phone_number, user.address);
   }
 
-  async findByCpf(cpf: string) {
+  async findByCpf(cpf: string): Promise<Professional | null> {
     return await this.prisma.professional.findUnique({
       where: { cpf }
     });
   }
 
-  async findByCnpj(cnpj: string) {
+  async findByCnpj(cnpj: string): Promise<Company | null> {
     return await this.prisma.company.findUnique({
       where: { cnpj }
     });

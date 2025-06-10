@@ -12,10 +12,16 @@ export default class RegisterProfessional {
       input.email,
       input.password,
       input.birthDate,
-      input.role, input.name,
-      input.preferredName,
+      input.role,
+      input.phoneNumber,
+      input.address,
       input.cpf,
-      input.type,
+      input.name,
+      input.gender,
+      input.activityArea,
+      input.preferredName,
+      input.professionalRegistration,
+      input.socialNetwork,
       input.desk);
     const userExists = await this.userRepository.findByEmail(input.email);
     if (userExists) {
@@ -32,10 +38,15 @@ type Input = {
   password: string;
   birthDate: Date;
   role: string;
-  name: string;
-  preferredName: string;
+  phoneNumber: string;
+  address: string;
   cpf: string;
-  type: string;
+  name: string;
+  gender: string;
+  activityArea: string;
+  preferredName: string;
+  professionalRegistration: string;
+  socialNetwork: string;
   desk: string;
 }
 

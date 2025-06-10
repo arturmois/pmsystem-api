@@ -15,8 +15,8 @@ export default class UserController {
   private _signIn!: SignIn;
 
   registerProfessional = (req: Request, res: Response) => {
-    const data = professionalSchema.parse(req.body);
-    this._registerProfessional.execute(data);
+    const input = professionalSchema.parse(req.body);
+    this._registerProfessional.execute(input);
     res.json({ message: "Professional registered" });
   }
 
