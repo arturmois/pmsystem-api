@@ -8,30 +8,35 @@ import BudgetRepository from "../../repositories/BudgetRepository";
 export default class TicketService {
   @inject("ticketRepository")
   private ticketRepository!: TicketRepository;
-  @inject('userRepository')
+  @inject("userRepository")
   private userRepository!: UserRepository;
-  @inject('budgetRepository')
+  @inject("budgetRepository")
   private budgetRepository!: BudgetRepository;
 
-  private allowedRoles = ['PROFESSIONAL', 'COMPANY'];
+  private allowedRoles = ["PROFESSIONAL", "COMPANY"];
 
   async create(input: any) {
     const user = await this.userRepository.getById(input.userId);
     if (!user) {
-      throw new AppError('User not found', 404);
+      throw new AppError("User not found", 404);
     }
     if (!this.allowedRoles.includes(user.getRole())) {
-      throw new AppError('User is not allowed to create a ticket', 403);
+      throw new AppError("User is not allowed to create a ticket", 403);
     }
     const budget = await this.budgetRepository.getById(input.budgetId);
     if (!budget) {
-      throw new AppError('Budget not found', 404);
+      throw new AppError("Budget not found", 404);
     }
-    const ticket = await Ticket.create(budget.budget_id, user.getUserId(), input.message, input.fileUrl);
+    const ticket = await Ticket.create(
+      budget.budget_id,
+      user.getUserId(),
+      input.message,
+      input.fileUrl
+    );
     await this.ticketRepository.create(ticket);
     return {
-      ticketId: ticket.getTicketId()
-    }
+      ticketId: ticket.getTicketId(),
+    };
   }
 
   async getAll() {
@@ -39,6 +44,10 @@ export default class TicketService {
   }
 
   async getById(id: string) {
+    const ticket = await this.ticketRepository.findById(id);
+    if (!ticket) {
+      throw new AppError("Ticket not found", 404);
+    }
     return await this.ticketRepository.findById(id);
   }
 
