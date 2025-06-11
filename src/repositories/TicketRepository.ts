@@ -1,4 +1,4 @@
-import { Ticket } from "../models/entities/Ticket";
+import Ticket from "../models/entities/Ticket";
 import { PrismaClient } from "@prisma/client";
 import { inject } from "../shared/di/DI";
 
@@ -14,8 +14,6 @@ export default class TicketRepository {
         user_id: ticket.getUserId(),
         message: ticket.getMessage(),
         file_url: ticket.getFileUrl(),
-        created_at: ticket.getCreatedAt(),
-        updated_at: ticket.getUpdatedAt(),
       },
     });
   }
@@ -39,7 +37,6 @@ export default class TicketRepository {
       data: {
         message: data.message,
         file_url: data.fileUrl,
-        updated_at: new Date(),
       },
     });
   }
@@ -49,4 +46,5 @@ export default class TicketRepository {
       where: { ticket_id: ticketId },
     });
   }
+
 }

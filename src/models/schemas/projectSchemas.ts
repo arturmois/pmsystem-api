@@ -1,16 +1,11 @@
 import z from 'zod'
 
-const schemaCreate = z.object({
-    projectId: z.string(),
-    professionalId: z.string(),
+export const CreateProjectSchema = z.object({
     title: z.string(),
     startDate: z.string(),
 });
 
-const schemaUpdate = z.object({
-    projectId: z.string(),
+export const UpdateProjectSchema = z.object({
     title: z.string(),
     startDate: z.string(),
 });
-
-export { schemaCreate, schemaUpdate };

@@ -1,34 +1,42 @@
 import { Request, Response } from 'express';
-import { professionalSchema, companySchema } from '../models/schemas/userSchemas';
 import RegisterCompany from '../services/users/RegisterCompany';
 import RegisterProfessional from '../services/users/RegisterProfessional';
 import { inject } from '../shared/di/DI';
-import { loginSchema } from '../models/schemas/loginSchema';
 import SignIn from '../services/users/Signin';
+import type GetUsers from '../services/users/GetUsers';
 
 export default class UserController {
   @inject('registerProfessional')
   private _registerProfessional!: RegisterProfessional;
   @inject('registerCompany')
   private _registerCompany!: RegisterCompany;
-  @inject('signIn')
+  @inject('signin')
   private _signIn!: SignIn;
+  @inject('getUsers')
+  private _getUsers!: GetUsers;
 
-  registerProfessional = (req: Request, res: Response) => {
-    const data = professionalSchema.parse(req.body);
-    this._registerProfessional.execute(data);
-    res.json({ message: "Professional registered" });
+  registerProfessional = async (req: Request, res: Response) => {
+    const input = req.body;
+    const result = await this._registerProfessional.execute(input);
+    res.json({ userId: result.userId });
+
   }
 
   registerCompany = async (req: Request, res: Response) => {
-    const input = companySchema.parse(req.body);
-    await this._registerCompany.execute(input);
-    res.json({ message: "Company registered" });
+    const input = req.body;
+    const result = await this._registerCompany.execute(input);
+    res.json({ userId: result.userId });
+
+  }
+
+  getUsers = async (req: Request, res: Response) => {
+    const result = await this._getUsers.execute();
+    res.json(result);
   }
 
   login = async (req: Request, res: Response) => {
-    const { email, password } = loginSchema.parse(req.body);
-    const result = await this._signIn.execute({ email, password });
+    const input = req.body;
+    const result = await this._signIn.execute(input);
     res.json({ token: result.token });
   }
 

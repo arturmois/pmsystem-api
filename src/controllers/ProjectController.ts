@@ -1,59 +1,51 @@
-import { NextFunction, Request, Response } from 'express';
-import { schemaCreate, schemaUpdate } from "../models/schemas/projectSchemas";
-import { z } from 'zod';
-import ProjectsService from "../services/project/ProjectsService"
+import { NextFunction, Response, Request } from 'express';
+import ProjectsService from "../services/project/ProjectService"
 import { inject } from '../shared/di/DI';
 
 export default class ProjectController {
   @inject('projectService')
   private projectService!: ProjectsService;
 
-  controllerCreateProject = async (req: Request, res: Response, next: NextFunction) => {
+  create = async (req: any, res: Response, next: NextFunction) => {
     try {
-      const data = schemaCreate.parse(req.body)
-      const response = await this.projectService.serviceCreateProject(data);
-      res.json({ message: "Success", data: response.data, status: 201 });
+      const input = req.body;
+      input.userId = req.userId;
+      const result = await this.projectService.create(input);
+      res.status(201).json(result);
     }
     catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: error.errors });
-      } else {
-        next(error);
-      }
+      next(error);
     }
   }
 
-  controllerGetAllProjects = async (req: Request, res: Response, next: NextFunction) => {
+  getAll = async (req: any, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const result = await this.projectService.serviceAllProjects(id);
+      const userId = req.userId;
+      const result = await this.projectService.getAll(userId);
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const input = req.body;
+      const result = await this.projectService.update(input);
       res.json({ message: "Success", data: result, status: 200 });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  controllerUpdateProject = async (req: Request, res: Response, next: NextFunction) => {
+  delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = schemaUpdate.parse(req.body);
-      const result = await this.projectService.serviceUpdateProject(data);
-
-      res.json({ message: "Success", data: result, status: 200 });
-
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: error.errors });
-        return
-      }
-    }
-  }
-
-  controllerDeleteProject = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const projectId = req.params.id;
-      const result = await this.projectService.serviceDeleteProject(projectId);
+      const input = req.body;
+      await this.projectService.delete(input);
       res.json({ message: "Deleted", status: 200 });
     } catch (error: any) {
+      next(error);
     }
   }
+
 }

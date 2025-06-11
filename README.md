@@ -93,10 +93,10 @@ npm start
 ## API Endpoints
 
 ### Authentication
-- POST /api/auth/login
-- POST /api/auth/register-professional
-- POST /api/auth/register-company
-- GET /api/auth/user
+- POST /api/users/login
+- POST /api/users/professional
+- POST /api/users/company
+- GET /api/users/user
 
 ### Projects
 - POST /api/projects

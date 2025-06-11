@@ -20,7 +20,7 @@ export default class Signin {
     if (!validPassword) {
       throw new AppError('Invalid password', 401);
     }
-    const token = sign({ id: user.id, email: user.email }, JWT_SECRET as string, {
+    const token = sign({ userId: user.user_id, email: user.email }, JWT_SECRET as string, {
       expiresIn: '1d',
     });
     return { token };

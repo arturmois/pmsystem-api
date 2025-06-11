@@ -1,40 +1,49 @@
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../../generated/prisma";
 import Project from "../models/entities/Project";
 import { inject } from "../shared/di/DI";
 
 export default class ProjectRepository {
   @inject('prisma')
-  private prisma: PrismaClient;
+  private prisma!: PrismaClient;
 
-  async createProject(project: Project) {
-    const data = project.getProject();
-    // Ensure that the startDate is a valid Date object
-
+  async create(project: Project) {
     await this.prisma.project.create({
       data: {
-        project_id: data.projectId,
-        professional_id: data.professionalId,
-        title: data.title,
-        start_date: new Date(data.startDate)
+        project_id: project.getProjectId(),
+        title: project.getTitle(),
+        start_date: new Date(project.getStartDate()),
+        professional: {
+          connect: {
+            user_id: project.getProfessionalId()
+          }
+        }
       }
     })
   }
 
-  async repositoryAllProjects(id: string) {
-    // Retrieve all projects associated with the professional ID
+  async getAll(userId: string) {
     return await this.prisma.project.findMany({
       where: {
-        professional_id: id,
+        professional: {
+          user_id: userId
+        }
       },
       orderBy: {
         start_date: 'asc',
       },
     })
-
   }
 
-  async repositoryUpdateProject(data: any) {
-    // Update the project with the given projectId
+  async getById(projectId: string) {
+    console.log(projectId);
+    return await this.prisma.project.findUnique({
+      where: {
+        project_id: projectId,
+      },
+    });
+  }
+
+  async update(data: any) {
     return await this.prisma.project.update({
       where: {
         project_id: data.projectId,
@@ -46,8 +55,7 @@ export default class ProjectRepository {
     });
   }
 
-  async repositoryDeleteProject(projectId: string) {
-    // Delete the project with the given projectId
+  async delete(projectId: string) {
     return await this.prisma.project.delete({
       where: {
         project_id: projectId,

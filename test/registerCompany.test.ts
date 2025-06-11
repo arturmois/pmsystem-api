@@ -1,15 +1,19 @@
-import { UserService } from "../src/services/user.service";
-import { UserRepository } from "../src/repositories/UserRepository";
-import { prisma } from "../src/config/database";
+import UserRepository from "../src/repositories/UserRepository";
+import prisma from "../src/config/database";
+import RegisterCompany from "../src/services/users/RegisterCompany";
+import { Registry } from "../src/shared/di/DI";
 
-let userService: UserService;
+let registerCompany: RegisterCompany;
+let userRepository: UserRepository;
 
 beforeEach(async () => {
   await prisma.professional.deleteMany();
   await prisma.company.deleteMany();
   await prisma.user.deleteMany();
-  const userRepository = new UserRepository();
-  userService = new UserService(userRepository);
+  Registry.getInstance().provide('prisma', prisma);
+  userRepository = new UserRepository();
+  Registry.getInstance().provide('userRepository', userRepository);
+  registerCompany = new RegisterCompany();
 });
 
 afterEach(async () => {
@@ -20,22 +24,25 @@ test("should register a company", async () => {
   const company = {
     email: `test-${Math.random()}@test.com`,
     password: "123456",
-    birthDate: "1990-01-01T00:00:00.000Z",
+    birthDate: new Date("1990-01-01T00:00:00.000Z"),
     role: "C",
-    cnpj: "12345678900",
+    phoneNumber: "12345678900",
     address: "Rua 123",
+    cnpj: "12345678900",
     fantasyName: "John Doe",
     socialReason: "John Doe",
     segment: "Paisagismo",
     monthlyFee: 100,
     commission: 10,
+    platform1: "https://www.linkedin.com/in/john-doe-12345678900",
+    platform2: "https://www.linkedin.com/in/john-doe-12345678900"
   };
 
-  await userService.registerCompany(company);
+  await registerCompany.execute(company);
 
-  const user = await userService.getUserByEmail(company.email);
+  const user = await userRepository.findByEmail(company.email);
   expect(user).toBeTruthy();
-  expect(user?.email).toBe(company.email);
-  expect(user?.birthDate).toEqual(new Date(company.birthDate));
-  expect(user?.role).toBe(company.role);
+  expect(user?.getEmail()).toBe(company.email);
+  expect(user?.getBirthDate()).toEqual(new Date(company.birthDate));
+  expect(user?.getRole()).toBe(company.role);
 });

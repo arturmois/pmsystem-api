@@ -16,22 +16,27 @@ export default class Project {
         this.startDate = startDate
     }
 
-    static async modelCreateProject(data: any) {
+    static async create(title: string, startDate: string, professionalId: string) {
         const projectId = crypto.randomUUID();
         return new Project(
             projectId,
-            data.professionalId,
-            data.title,
-            data.startDate
+            professionalId,
+            title,
+            startDate
         );
     }
-
-    getProject() {
-        return ({
-            projectId: this.projectId,
-            professionalId: this.professionalId,
-            title: this.title,
-            startDate: this.startDate
-        })
+    getProjectId() {
+        return this.projectId;
     }
+    getProfessionalId() {
+        return this.professionalId;
+    }
+    getTitle() {
+        return this.title;
+    }
+
+    getStartDate() {
+        return this.startDate;
+    }
+
 }
