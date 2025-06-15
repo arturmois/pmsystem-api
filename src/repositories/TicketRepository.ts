@@ -1,6 +1,7 @@
+import { PrismaClient, Ticket as PrismaTicket } from "../../generated/prisma";
 import Ticket from "../models/entities/Ticket";
-import { PrismaClient } from "@prisma/client";
 import { inject } from "../shared/di/DI";
+import console from "console";
 
 export default class TicketRepository {
   @inject("prisma")
@@ -18,8 +19,21 @@ export default class TicketRepository {
     });
   }
 
-  async findAll() {
-    return await this.prisma.ticket.findMany();
+  async findAll(budgetId: string | undefined) {
+    const tickets = await this.prisma.ticket.findMany({
+      where: {
+        budget_id: budgetId
+      }
+    });
+    return tickets.map((ticket: PrismaTicket) => {
+      return {
+        ticketId: ticket.ticket_id,
+        budgetId: ticket.budget_id,
+        userId: ticket.user_id,
+        message: ticket.message,
+        fileUrl: ticket.file_url,
+      }
+    });
   }
 
   async findById(ticketId: string) {

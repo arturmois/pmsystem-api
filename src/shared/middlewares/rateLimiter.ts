@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
 import Redis from 'ioredis';
 import AppError from '../errors/AppError';
-import { REDIS_HOST, REDIS_PASS, REDIS_PORT } from '../../config/env';
+import { REDIS_HOST, REDIS_PORT } from '../../config/env';
 
 const redisClient = new Redis({
   host: REDIS_HOST,
   port: Number(REDIS_PORT),
-  password: REDIS_PASS || undefined,
+  password: undefined,
 });
 
 const limiter = new RateLimiterRedis({

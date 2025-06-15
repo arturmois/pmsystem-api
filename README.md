@@ -92,32 +92,39 @@ npm start
 
 ## API Endpoints
 
-### Authentication
-- POST /api/users/login
-- POST /api/users/professional
-- POST /api/users/company
-- GET /api/users/user
+### Authentication & Users
+- POST /api/users/login - User login
+- POST /api/users/professional - Register a new professional user
+- POST /api/users/company - Register a new company user
+- GET /api/users - Get all users (requires authentication)
 
 ### Projects
-- POST /api/projects
-- PUT /api/projects/:id
-- DELETE /api/projects/:id
-- GET /api/projects/:id
-- GET /api/projects
+- POST /api/projects - Create a new project (requires authentication)
+- GET /api/projects/:userId - Get projects by user ID (requires authentication)
+- GET /api/projects - Get all projects (requires authentication)
+- PUT /api/projects/:id - Update a project (requires authentication)
+- DELETE /api/projects - Delete a project (requires authentication)
 
 ### Budgets
-- POST /api/budgets
-- PUT /api/budgets/:id
-- DELETE /api/budgets/:id
-- GET /api/budgets/:id
-- GET /api/budgets
+- POST /api/budgets - Create a new budget (requires authentication)
+- GET /api/budgets - Get all budgets (requires authentication)
+- PUT /api/budgets/:id - Update a budget (requires authentication)
+- DELETE /api/budgets/:id - Delete a budget (requires authentication)
 
 ### Tickets
-- POST /api/tickets
-- PUT /api/tickets/:id
-- DELETE /api/tickets/:id
-- GET /api/tickets/:id
-- GET /api/tickets
+- POST /api/tickets - Create a new ticket (requires authentication)
+- GET /api/tickets - Get all tickets (requires authentication)
+- PUT /api/tickets/:id - Update a ticket (requires authentication)
+- DELETE /api/tickets/:id - Delete a ticket (requires authentication)
+- POST /api/tickets/:id/upload - Upload a file to a ticket (requires authentication)
+
+### Sales
+- POST /api/sales - Create a new sale (requires authentication)
+- GET /api/sales/:id - Get a sale by ID (requires authentication)
+- PUT /api/sales/:id - Update a sale (requires authentication)
+- DELETE /api/sales/:id - Delete a sale (requires authentication)
+
+Note: All endpoints except user registration and login require authentication via JWT token in the Authorization header.
 
 ## Data Models
 

@@ -13,4 +13,5 @@ routes.use('/projects', AuthMiddleware.execute, projectRouter);
 routes.use('/budgets', AuthMiddleware.execute, budgetRouter)
 routes.use("/tickets", AuthMiddleware.execute, ticketRouter);
 routes.use("/sales", AuthMiddleware.execute, saleRouter);
+
 export default routes;

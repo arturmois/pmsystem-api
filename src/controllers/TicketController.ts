@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { inject } from "../shared/di/DI";
 import TicketService from "../services/ticket/TicketService";
+import AppError from "../shared/errors/AppError";
 
 export default class TicketController {
   @inject("ticketService")
@@ -13,32 +14,33 @@ export default class TicketController {
       const result = await this.ticketService.create(input);
       res.status(201).json(result);
     } catch (error: any) {
-      res.status(400).json({ error: error.errors || error.message });
+      throw new AppError(error.errors || error.message, 400);
     }
   };
 
-  async getAll(req: Request, res: Response) {
+  getAll = async (req: Request, res: Response) => {
     try {
-      const tickets = await this.ticketService.getAll();
+      const budgetId = req.query.budgetId as string;
+      const tickets = await this.ticketService.getAll(budgetId);
       res.json(tickets);
     } catch (error) {
-      res.status(500).json({ error: "Erro ao buscar tickets" });
+      throw new AppError("Error searching tickets", 500);
     }
   }
 
-  async getById(req: Request, res: Response) {
+  getById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const ticket = await this.ticketService.getById(id);
       if (!ticket)
-        return res.status(404).json({ error: "Ticket não encontrado" });
+        return res.status(404).json({ error: "Ticket not found" });
       res.json(ticket);
     } catch (error) {
-      res.status(500).json({ error: "Erro ao buscar ticket" });
+      throw new AppError("Error searching ticket", 500);
     }
   }
 
-  async update(req: Request, res: Response) {
+  update = async (req: Request, res: Response) => {
     try {
       const input = req.body;
       const ticket = await this.ticketService.update(
@@ -51,13 +53,25 @@ export default class TicketController {
     }
   }
 
-  async delete(req: Request, res: Response) {
+  delete = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       await this.ticketService.delete(id);
       res.status(204).send();
     } catch (error) {
-      res.status(500).json({ error: "Erro ao deletar ticket" });
+      throw new AppError("Error deleting ticket", 500);
     }
   }
+
+  upload = async (req: any, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { fileName, fileType } = req.body;
+      const presignedUrl = await this.ticketService.upload(id, fileName, fileType);
+      res.json(presignedUrl);
+    } catch (error: any) {
+      throw new AppError(error.message, error.statusCode);
+    }
+  }
+
 }
