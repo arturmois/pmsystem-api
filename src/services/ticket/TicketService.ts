@@ -67,9 +67,11 @@ export default class TicketService {
     });
     try {
       const presignedUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+      await this.ticketRepository.update(ticketId, { fileUrl: presignedUrl });
       return {
         url: presignedUrl,
-        method: 'PUT'
+        method: 'PUT',
+        ticketId: ticketId
       };
     } catch (error) {
       console.log(error);
